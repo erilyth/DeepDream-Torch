@@ -1,0 +1,28 @@
+require 'nn'
+local model = {}
+-- warning: module 'cifar [type 5]' not found
+table.insert(model, {'conv1', nn.SpatialConvolution(3, 192, 5, 5, 1, 1, 2, 2)})
+table.insert(model, {'relu1', nn.ReLU(true)})
+table.insert(model, {'cccp1', nn.SpatialConvolution(192, 160, 1, 1, 1, 1, 0, 0)})
+table.insert(model, {'relu_cccp1', nn.ReLU(true)})
+table.insert(model, {'cccp2', nn.SpatialConvolution(160, 96, 1, 1, 1, 1, 0, 0)})
+table.insert(model, {'relu_cccp2', nn.ReLU(true)})
+table.insert(model, {'pool1', nn.SpatialMaxPooling(3, 3, 2, 2, 0, 0):ceil()})
+table.insert(model, {'drop3', nn.Dropout(0.500000)})
+table.insert(model, {'conv2', nn.SpatialConvolution(96, 192, 5, 5, 1, 1, 2, 2)})
+table.insert(model, {'relu2', nn.ReLU(true)})
+table.insert(model, {'cccp3', nn.SpatialConvolution(192, 192, 1, 1, 1, 1, 0, 0)})
+table.insert(model, {'relu_cccp3', nn.ReLU(true)})
+table.insert(model, {'cccp4', nn.SpatialConvolution(192, 192, 1, 1, 1, 1, 0, 0)})
+table.insert(model, {'relu_cccp4', nn.ReLU(true)})
+table.insert(model, {'pool2', nn.SpatialAveragePooling(3, 3, 2, 2, 0, 0):ceil()})
+table.insert(model, {'drop6', nn.Dropout(0.500000)})
+table.insert(model, {'conv3', nn.SpatialConvolution(192, 192, 3, 3, 1, 1, 1, 1)})
+table.insert(model, {'relu3', nn.ReLU(true)})
+table.insert(model, {'cccp5', nn.SpatialConvolution(192, 192, 1, 1, 1, 1, 0, 0)})
+table.insert(model, {'relu_cccp5', nn.ReLU(true)})
+table.insert(model, {'cccp6', nn.SpatialConvolution(192, 10, 1, 1, 1, 1, 0, 0)})
+table.insert(model, {'relu_cccp6', nn.ReLU(true)})
+table.insert(model, {'pool3', nn.SpatialAveragePooling(8, 8, 1, 1, 0, 0):ceil()})
+table.insert(model, {'loss', nn.SoftMax()})
+return model
