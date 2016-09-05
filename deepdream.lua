@@ -41,22 +41,22 @@ end
 -- Make sure Normalization is set
 function pre_process(img)
 	img_new = img:double()
-	img_new:div(255.0)
-	img_new:add(-Normalization.mean)
-	img_new:div(Normalization.std)
+	img_new = img_new:div(255.0)
+	img_new = img_new:add(-Normalization.mean)
+	img_new = img_new:div(Normalization.std)
 	return img_new
 end
 
 function post_process(img)
 	img_new = img * Normalization.std
-	img_new:add(Normalization.mean)
-	img_new:mul(255.0)
+	img_new = img_new:add(Normalization.mean)
+	img_new = img_new:mul(255.0)
 	return img_new
 end
 
 use_cuda = 1
 
-full_model = loadcaffe.load('Models/VGG_S/deploy.prototxt', 'Models/VGG_S/VGG_CNN_S.caffemodel')
+full_model = loadcaffe.load('Models/VGG_F/deploy.prototxt', 'Models/VGG_F/VGG_CNN_F.caffemodel')
 print(full_model)
 
 netw = reducenet(full_model,layer_cut)
@@ -68,19 +68,25 @@ if use_cuda == 1 then
 	netw = netw:cuda()
 end
 
+-- Use octaves to construct a hierarchy of different sized images and apply deep dream to each layer.
+
 input = image.load(imgfile,3,'byte')
+input_copy = image.load(imgfile,3,'byte')
 Normalization.mean = torch.mean(input:float())/255.0
 Normalization.std = torch.std(input:float())/255.0
 print(Normalization.mean .. " " .. Normalization.std)
 
 input = pre_process(input)
+input_copy = pre_process(input_copy)
 
 -- Generally networks use 3x244x244 images as inputs
 input = image.scale(input,224,224)
+input_copy = image.scale(input_copy,224,224)
 image.display{image=(post_process(input)), win=w1}
 
 if use_cuda == 1 then
 	input = input:cuda()
+	input_copy = input_copy:cuda()
 end
 
 for tt=1,iterations do
@@ -90,7 +96,7 @@ for tt=1,iterations do
     local output_grads = outputs_cur
     local inp_grad = netw:updateGradInput(input,output_grads)
     -- Gradient ascent
-    input:add(inp_grad:mul(update_rate/torch.abs(inp_grad):mean()))
+    input = input:add(inp_grad:mul(update_rate/torch.abs(inp_grad):mean()))
     image.display{image=(post_process(input)), win=w2}
     print(tt)
 end
