@@ -24,7 +24,8 @@ layer_cut = arg[2]
 iterations = arg[3]
 update_rate = arg[4]
 
-local Normalization = {mean = 118.380948/255, std = 61.896913/255}
+-- Set this from the input image first before calling pre_process
+local Normalization = {mean = 0/255, std = 0/255}
 
 w1 = qtwidget.newwindow(500, 500)
 w2 = qtwidget.newwindow(500, 500)
@@ -37,6 +38,7 @@ function reducenet(net, layer)
 	return network
 end
 
+-- Make sure Normalization is set
 function pre_process(img)
 	img_new = img:double()
 	img_new:div(255.0)
@@ -66,7 +68,13 @@ if use_cuda == 1 then
 	netw = netw:cuda()
 end
 
-input = pre_process(image.load(imgfile,3,'byte'))
+input = image.load(imgfile,3,'byte')
+Normalization.mean = torch.mean(input:float())/255.0
+Normalization.std = torch.std(input:float())/255.0
+print(Normalization.mean .. " " .. Normalization.std)
+
+input = pre_process(input)
+
 -- Generally networks use 3x244x244 images as inputs
 input = image.scale(input,224,224)
 image.display{image=(post_process(input)), win=w1}
