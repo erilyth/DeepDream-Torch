@@ -13,6 +13,8 @@
 ##### Models
 * Use .t7 models directly
 * For .caffemodel models use loadcaffe (ex.NIN)
+* A compressed package of most of the famous models, https://drive.google.com/file/d/0B984IDha34FGcmZXZ0RBZ2p5TDQ/view?usp=sharing
+(Contains AlexNet,GoogLeNet,GoogLeNetCars,NIN,OxfordFlowers102,PascalVOC2012,PlacesCNN,ResNet,VGG_F,VGG_S)
 
 ##### Usage
 * `qlua deepdream.lua <source_img> <layer_max> <iterations> <update_rate>`
