@@ -21,3 +21,5 @@
 
 ##### Possible variations
 * Instead of amplifying the entire layer, we could also select a single node and then set its output gradient = output and then for the rest set their gradients to 0. In this manner we would be amplifying the features that we want to, so it would generate more predictable images.
+* Apply deep dream on multiple layers together and sum up the gradients while moving backwards
+* Consider a network which takes large images as inputs to get higher quality images

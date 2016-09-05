@@ -51,6 +51,7 @@ function post_process(img)
 	img_new = img * Normalization.std
 	img_new = img_new:add(Normalization.mean)
 	img_new = img_new:mul(255.0)
+	img_new = image.scale(img_new, 500, 500, 'bicubic')
 	return img_new
 end
 
@@ -116,7 +117,7 @@ for oct=1,total_octaves do
 	    local inp_grad = netw:updateGradInput(cur_oct,output_grads)
 	    -- Gradient ascent
 	    cur_oct = cur_oct:add(inp_grad:mul(update_rate/torch.abs(inp_grad):mean()))
-	    image.display{image=(post_process(cur_oct)), win=w2}
+	    image.display{image=(post_process(cur_oct:float())), win=w2}
 	    print(oct,tt)
 	end
 	cur_oct = cur_oct:float()
