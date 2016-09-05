@@ -54,7 +54,7 @@ end
 
 use_cuda = 1
 
-full_model = loadcaffe.load('Models/NIN/deploy.prototxt', 'Models/NIN/cifar10_nin.caffemodel')
+full_model = loadcaffe.load('Models/VGG_S/deploy.prototxt', 'Models/VGG_S/VGG_CNN_S.caffemodel')
 print(full_model)
 
 netw = reducenet(full_model,layer_cut)
@@ -67,7 +67,8 @@ if use_cuda == 1 then
 end
 
 input = pre_process(image.load(imgfile,3,'byte'))
-input = image.scale(input,500,500)
+-- Generally networks use 3x244x244 images as inputs
+input = image.scale(input,224,224)
 image.display{image=(post_process(input)), win=w1}
 
 if use_cuda == 1 then
